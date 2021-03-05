@@ -58,10 +58,10 @@ jobs:
           exec make docs BUILD_TAG="$GITHUB_BRANCH"
           EOF
           
-          rm -rf "$GITHUB_WORKSPACE/docs/${GITHUB_BRANCH}"
-          mkdir -pv "$GITHUB_WORKSPACE/docs/${GITHUB_BRANCH}"
-          cp -Trv docs/build/dirhtml "$GITHUB_WORKSPACE/docs/${GITHUB_BRANCH}"
-          touch "$GITHUB_WORKSPACE/docs/${GITHUB_BRANCH}/.is_ref"
+          rm -rf "docs/${GITHUB_BRANCH}"
+          mkdir -pv "docs/${GITHUB_BRANCH}"
+          cp -Trv repo/docs/build/dirhtml "docs/${GITHUB_BRANCH}"
+          touch "docs/${GITHUB_BRANCH}/.is_ref"
 
       - name: Update availabe docs versions
         run: |
