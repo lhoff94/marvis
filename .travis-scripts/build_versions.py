@@ -4,7 +4,7 @@ import os
 import subprocess
 import json
 
-BASE_URL = os.environ.get('DOCS_BASE_URL', 'https://osmhpi.github.io/cohydra')
+BASE_URL = os.environ.get('DOCS_BASE_URL', 'https://diselab.github.io/marvis')
 BASE_URL = BASE_URL.rstrip('/') + '/'
 
 def run(*args) -> str:
