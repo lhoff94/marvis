@@ -14,8 +14,7 @@ def run(*args) -> str:
 def main():
     os.chdir(os.path.dirname(__file__))
 
-    default_branch = run('git', 'symbolic-ref', '--short', 'refs/remotes/origin/HEAD')
-    default_branch = default_branch.strip()[len('origin/'):]
+    default_branch = 'master'
 
     branches = run('git', 'for-each-ref', '--format=%(refname:lstrip=3)', 'refs/remotes/origin/')
     branches = [
