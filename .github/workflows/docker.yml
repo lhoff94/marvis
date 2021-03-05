@@ -29,13 +29,6 @@ jobs:
       - name: Build all images
         run: make -C repo all latest
 
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v1
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.CR_PAT }}
-
       - name: Delete docs for old branches
         run: |
           cd "docs"
@@ -43,7 +36,7 @@ jobs:
             ref="$(dirname "$line")"
             ref="${ref:2}"
             if ! git rev-parse --verify -q "refs/remotes/origin/$ref" > /dev/null; then
-              run rm -rf "$ref"
+              rm -rf "$ref"
             fi
           done
 
@@ -65,10 +58,10 @@ jobs:
           exec make docs BUILD_TAG="$GITHUB_BRANCH"
           EOF
           
-          run rm -rf "$GITHUB_WORKSPACE/docs/${GITHUB_BRANCH}"
-          run mkdir -pv "$GITHUB_WORKSPACE/docs/${GITHUB_BRANCH}"
-          run cp -Trv docs/build/dirhtml "$GITHUB_WORKSPACE/docs/${GITHUB_BRANCH}"
-          run touch "$GITHUB_WORKSPACE/docs/${GITHUB_BRANCH}/.is_ref"
+          rm -rf "$GITHUB_WORKSPACE/docs/${GITHUB_BRANCH}"
+          mkdir -pv "$GITHUB_WORKSPACE/docs/${GITHUB_BRANCH}"
+          cp -Trv docs/build/dirhtml "$GITHUB_WORKSPACE/docs/${GITHUB_BRANCH}"
+          touch "$GITHUB_WORKSPACE/docs/${GITHUB_BRANCH}/.is_ref"
 
       - name: Update availabe docs versions
         run: |
@@ -86,6 +79,13 @@ jobs:
             git commit -m "Build docs for ${GITHUB_SHA::7} on branch ${GITHUB_REF#refs/heads/}"
             git push
           fi
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.CR_PAT }}
       
       - name: Push latest images
         run: make -C repo push-latest
