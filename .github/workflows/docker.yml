@@ -25,6 +25,7 @@ jobs:
         with:
           ref: gh-pages
           path: docs
+          fetch-depth: 0
 
       - name: Build all images
         run: make -C repo all latest
