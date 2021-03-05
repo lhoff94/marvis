@@ -33,6 +33,7 @@ jobs:
       - name: Delete docs for old branches
         run: |
           cd "docs"
+          git fetch  # Download remote ref information
           find . -name .is_ref | while read line; do
             ref="$(dirname "$line")"
             ref="${ref:2}"
