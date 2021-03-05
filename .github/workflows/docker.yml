@@ -70,7 +70,8 @@ jobs:
           ./.travis-scripts/build_versions.py
 
       - name: Publish docs
-        run: |          
+        run: |
+          cd docs
           if [ -z "$(git status --porcelain)" ]; then
             echo "Nothing to commit"
           else
