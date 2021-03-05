@@ -25,7 +25,7 @@ You of course need to modify the volume mount to allow cohydra access to your sc
         --pid host \
         --userns host \
         --privileged \
-        osmhpi/cohydra:latest
+        ghcr.io/diselab/marvis:latest
 
 The main image is based on the images in the :src:`docker <docker>` directory.
 The :src:`cohydra-base <docker/cohydra-base/Dockerfile>` installs all neccessary dependencies for cohydra,
