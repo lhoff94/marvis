@@ -23,12 +23,12 @@ Otherwise, you can build the [Dockerfile](./Dockerfile) in the project's root di
 `PYTHONPATH`. But you need to make sure, that you run the container with privileges to access the host network in order to have access to the host's network interfaces. You of course need to modify the volume mount to allow cohydra access to your scenarios.
 
 ```sh
-docker run -it --rm --cap-add=ALL -v /var/run/docker.sock:/var/run/docker.sock --net host --pid host --userns host --privileged osmhpi/cohydra:latest
+docker run -it --rm --cap-add=ALL -v /var/run/docker.sock:/var/run/docker.sock --net host --pid host --userns host --privileged ghcr.io/diselab/marvis:latest
 ```
 
-The main image [`osmhpi/cohydra`](https://hub.docker.com/r/osmhpi/cohydra) is based on the images in the [docker](./docker) directory.
-The [`osmhpi/cohydra:base`](./docker/cohydra-base/Dockerfile) image installs all neccessary dependencies for cohydra,
-[`osmhpi/cohydra:dev`](./docker/cohydra-dev/Dockerfile) is for development purposes (docker-cli in the container).
+The main image [`ghcr.io/diselab/marvis`](https://hub.docker.com/r/osmhpi/cohydra) is based on the images in the [docker](./docker) directory.
+The [`ghcr.io/diselab/marvis:base`](./docker/cohydra-base/Dockerfile) image installs all neccessary dependencies for cohydra,
+[`ghcr.io/diselab/marvis:dev`](./docker/cohydra-dev/Dockerfile) is for development purposes (docker-cli in the container).
 
 ### Installation Without Docker
 
@@ -46,7 +46,7 @@ sudo pip3 install git+https://github.com/active-expressions/active-expressions-s
 The Python libraries / directory provided by ns-3 and all other packages has to be in your `PYTHONPATH`, though.
 To run an example testcase, go to the example folder and run:
 ```shell script
-pyton3 basic_example.py
+python3 basic_example.py
 ```
 
 Cohydra so far has only been tested with **Debian 10 Buster** and **Ubuntu 18.04 Bionic Beaver**.
