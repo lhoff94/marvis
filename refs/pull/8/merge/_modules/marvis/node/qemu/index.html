@@ -1,0 +1,401 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>marvis.node.qemu &mdash; marvis 0.2.0 - refs/pull/8/merge documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/language_data.js"></script>
+        <script src="https://diselab.github.io/marvis/versions.js"></script>
+    
+    <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/graphviz.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../../genindex/" />
+    <link rel="search" title="Search" href="../../../../search/" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../../" class="icon icon-home"> marvis
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.2.0 - refs/pull/8/merge
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search/" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation/">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../getting-started/">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../sumo/">Using SUMO With marvis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/">API Reference</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../">marvis</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../">Docs</a> &raquo;</li>
+        
+          <li><a href="../../../">Module code</a> &raquo;</li>
+        
+      <li>marvis.node.qemu</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for marvis.node.qemu</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;QEMU VM in the simulation.&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">threading</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">paramiko</span>
+
+<span class="kn">from</span> <span class="nn">..context</span> <span class="kn">import</span> <span class="n">defer</span>
+<span class="kn">from</span> <span class="nn">..command_executor</span> <span class="kn">import</span> <span class="n">LocalCommandExecutor</span><span class="p">,</span> <span class="n">SSHCommandExecutor</span>
+<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">Node</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<div class="viewcode-block" id="QEMUNode"><a class="viewcode-back" href="../../../../api/marvis.node.qemu/#marvis.node.qemu.QEMUNode">[docs]</a><span class="k">class</span> <span class="nc">QEMUNode</span><span class="p">(</span><span class="n">Node</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A QEMUNode represents a QEMU VM.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    name : str</span>
+<span class="sd">        The name of the node (and QEMU instance).</span>
+<span class="sd">        It must consist only of *alphanumeric characters* and :code:`-`, :code:`_` and :code:`.`.</span>
+<span class="sd">    ip : str</span>
+<span class="sd">        The ip address for the connection to the QEMU VM.</span>
+<span class="sd">        Must be unique and not in use already. Cohydra will set it up automatically.</span>
+<span class="sd">        Format is `a.b.c.d`, where `d` not equal 1.</span>
+<span class="sd">    image_path : str</span>
+<span class="sd">        The (absolute or relative) path to the QEMU image file.</span>
+<span class="sd">    username : str</span>
+<span class="sd">        The username for the QEMU vm.</span>
+<span class="sd">    system: str</span>
+<span class="sd">        The system to start QEMU with. **Example:** `&#39;qemu-system-x86_64&#39;`</span>
+<span class="sd">    qemu_options : str</span>
+<span class="sd">        Additional QEMU starting parameters.</span>
+<span class="sd">    mac_address : str</span>
+<span class="sd">        The mac address of the QEMU VMs main network interface (guest_interface) will be set to the entered value.</span>
+<span class="sd">    guest_interface : str</span>
+<span class="sd">        Name of the guests main network interface for communication with the host.</span>
+<span class="sd">    copy_vm : bool</span>
+<span class="sd">        If set to :code:`True` the QEMU image will be copied and this copy will be deleted afterwards.</span>
+<span class="sd">        Currently not implemented!</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">ip</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">image_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">username</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">system</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">qemu_options</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">mac_address</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">guest_interface</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">copy_vm</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+        <span class="c1">#: The ip of the VM&#39;s interface to communicate with the host and allow access via ssh.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ip</span> <span class="o">=</span> <span class="n">ip</span>
+        <span class="c1">#: The QEMU image to use.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_path</span> <span class="o">=</span> <span class="n">image_path</span>
+        <span class="c1">#: The username.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">username</span> <span class="o">=</span> <span class="n">username</span>
+        <span class="c1">#: The password.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">password</span> <span class="o">=</span> <span class="n">password</span>
+        <span class="c1">#: The interface on the virtual machine for communication with the host.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">guest_interface</span> <span class="o">=</span> <span class="n">guest_interface</span>
+
+        <span class="c1">#: QEMU system to use for this image, ex: qemu-system-x86_64, qemu-system-arm, ...</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">system</span> <span class="o">=</span> <span class="n">system</span>
+
+        <span class="c1">#: PID of the QEMU instance. Required to terminate process afterwards.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">proc_id</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1">#: MAC address must be specified by the user to successfully add the device to Cohydras ns-3 network.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mac_address</span> <span class="o">=</span> <span class="n">mac_address</span>
+        <span class="k">if</span> <span class="n">mac_address</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Please specify the mac_address: xx:xx:xx:xx:xx:xx&#39;</span><span class="p">)</span>
+
+        <span class="c1">#: Additional QEMU options.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">qemu_options</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;-hda </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">image_path</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">qemu_options</span><span class="si">}</span><span class="s1"> -no-reboot -daemonize -display none -net nic,macaddr=</span><span class="si">{</span><span class="n">mac_address</span><span class="si">}</span><span class="s1"> -net tap&#39;</span>
+
+        <span class="k">if</span> <span class="n">image_path</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">system</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">guest_interface</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Please specify image path, system and guest_interfaces&#39;</span><span class="p">)</span>
+
+        <span class="c1">#: For commands executed on the host machine.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">local_command_executor</span> <span class="o">=</span> <span class="n">LocalCommandExecutor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+        <span class="c1">#: For commands executed on the QEMU VM.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">command_executor</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="QEMUNode.wants_ip_stack"><a class="viewcode-back" href="../../../../api/marvis.node.qemu/#marvis.node.qemu.QEMUNode.wants_ip_stack">[docs]</a>    <span class="k">def</span> <span class="nf">wants_ip_stack</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="QEMUNode.prepare"><a class="viewcode-back" href="../../../../api/marvis.node.qemu/#marvis.node.qemu.QEMUNode.prepare">[docs]</a>    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">simulation</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This runs a setup on network interfaces and starts the QEMU VM.&quot;&quot;&quot;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Preparing node </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setup_host_interfaces</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start_qemu</span><span class="p">()</span>
+        <span class="n">success</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wait_for_connection</span><span class="p">()</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">success</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">interface</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">setup_remote_address</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">address</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="QEMUNode.copy_qemu_image"><a class="viewcode-back" href="../../../../api/marvis.node.qemu/#marvis.node.qemu.QEMUNode.copy_qemu_image">[docs]</a>    <span class="k">def</span> <span class="nf">copy_qemu_image</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># TODO</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="QEMUNode.setup_host_interfaces"><a class="viewcode-back" href="../../../../api/marvis.node.qemu/#marvis.node.qemu.QEMUNode.setup_host_interfaces">[docs]</a>    <span class="k">def</span> <span class="nf">setup_host_interfaces</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Setup the interfaces (bridge, tap and IP on device) on the host and guest machine.</span>
+<span class="sd">        Generates management IP from given guest machine IP.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">host_ip</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="o">.</span><span class="n">rfind</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)]</span> <span class="o">+</span> <span class="s1">&#39;.1&#39;</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">interface</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">interface</span><span class="o">.</span><span class="n">setup_bridge</span><span class="p">()</span>
+            <span class="n">interface</span><span class="o">.</span><span class="n">connect_tap_to_bridge</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">interface</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="n">interface</span><span class="o">.</span><span class="n">setup_qemu_host_address</span><span class="p">(</span><span class="n">host_ip</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="QEMUNode.start_qemu"><a class="viewcode-back" href="../../../../api/marvis.node.qemu/#marvis.node.qemu.QEMUNode.start_qemu">[docs]</a>    <span class="k">def</span> <span class="nf">start_qemu</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Start the QEMU VM with the additional parameters set by the user.</span>
+<span class="sd">        Creates an additional tap device for the communication with the host machine.</span>
+<span class="sd">        Enables proxy_arp and sets the local command executor up (commands on host side)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Starting QEMU instance: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">tap_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">-tap&#39;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">local_command_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">qemu_options</span><span class="si">}</span><span class="s1">,ifname=</span><span class="si">{</span><span class="n">tap_name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">proc_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_pid</span><span class="p">(</span><span class="s1">&#39;qemu&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;ifname=</span><span class="si">{</span><span class="n">tap_name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">interface</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">local_command_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;ip link set </span><span class="si">{</span><span class="n">tap_name</span><span class="si">}</span><span class="s1"> master </span><span class="si">{</span><span class="n">interface</span><span class="o">.</span><span class="n">bridge_name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="c1">#self.local_command_executor.execute(f&#39;echo 1 &gt; /proc/sys/net/ipv4/conf/{self.host_interface}/proxy_arp&#39;, shell=True)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">local_command_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;echo 1 &gt; /proc/sys/net/ipv4/conf/</span><span class="si">{</span><span class="n">tap_name</span><span class="si">}</span><span class="s1">/proxy_arp&#39;</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">defer</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;stop QEMU instance </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">stop_qemu_vm</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">local_command_executor</span> <span class="o">=</span> <span class="n">LocalCommandExecutor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="QEMUNode.stop_qemu_vm"><a class="viewcode-back" href="../../../../api/marvis.node.qemu/#marvis.node.qemu.QEMUNode.stop_qemu_vm">[docs]</a>    <span class="k">def</span> <span class="nf">stop_qemu_vm</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Stop the QEMU VM.&quot;&quot;&quot;</span>
+        <span class="c1">#self.local_command_executor.execute(f&#39;echo 0 &gt; /proc/sys/net/ipv4/conf/{self.host_interface}/proxy_arp&#39;, shell=True)</span>
+        <span class="k">if</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">proc_id</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Stopping QEMU vm: </span><span class="si">%s</span><span class="s1">, with pid: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">proc_id</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">local_command_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;kill -9 </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">proc_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Could not retrieve pid from QEMU VM: </span><span class="si">%s</span><span class="s1">. To terminate all running QEMU instances do: sudo pkill qemu&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="QEMUNode.wait_for_connection"><a class="viewcode-back" href="../../../../api/marvis.node.qemu/#marvis.node.qemu.QEMUNode.wait_for_connection">[docs]</a>    <span class="k">def</span> <span class="nf">wait_for_connection</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Wait until the VM can be reached via SSH. Outputs logger info on timeout.&quot;&quot;&quot;</span>
+        <span class="n">timeout</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">timeout_max</span> <span class="o">=</span> <span class="mi">12</span>
+        <span class="n">timeout_sleep</span> <span class="o">=</span> <span class="mi">5</span>
+        <span class="n">client</span> <span class="o">=</span> <span class="n">paramiko</span><span class="o">.</span><span class="n">SSHClient</span><span class="p">()</span>
+        <span class="n">client</span><span class="o">.</span><span class="n">load_system_host_keys</span><span class="p">()</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Waiting &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">timeout_max</span><span class="o">*</span><span class="n">timeout_sleep</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; seconds for QEMU VM </span><span class="si">%s</span><span class="s1"> to complete booting...&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">client</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span> <span class="n">username</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">password</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">command_executor</span> <span class="o">=</span> <span class="n">SSHCommandExecutor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">client</span><span class="p">,</span> <span class="n">sudo</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;ssh connection to </span><span class="si">%s</span><span class="s1"> successful.&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">True</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+                <span class="c1">#logger.info(ex)</span>
+                <span class="k">if</span> <span class="n">timeout</span> <span class="o">&gt;</span> <span class="n">timeout_max</span><span class="p">:</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;QEMU VM </span><span class="si">%s</span><span class="s2"> could not be reached.&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="kc">False</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">timeout_sleep</span><span class="p">)</span>
+                <span class="n">timeout</span> <span class="o">+=</span> <span class="mi">1</span></div>
+
+<div class="viewcode-block" id="QEMUNode.get_custom_mac"><a class="viewcode-back" href="../../../../api/marvis.node.qemu/#marvis.node.qemu.QEMUNode.get_custom_mac">[docs]</a>    <span class="k">def</span> <span class="nf">get_custom_mac</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns the custom MAC address.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mac_address</span></div>
+
+<div class="viewcode-block" id="QEMUNode.get_pid"><a class="viewcode-back" href="../../../../api/marvis.node.qemu/#marvis.node.qemu.QEMUNode.get_pid">[docs]</a>    <span class="k">def</span> <span class="nf">get_pid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">grep</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns the process id of a given process with the name `grep` and the specific arguments `args`</span>
+<span class="sd">        Required for terminating the process afterwards.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        grep : str</span>
+<span class="sd">            The name of the process</span>
+<span class="sd">        args : str</span>
+<span class="sd">            Additional grep parameter if more than one process with the given name (grep) exists</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">qemu_pids</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">args</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+                <span class="n">qemu_pids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">local_command_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;pgrep &#39;</span> <span class="o">+</span> <span class="n">grep</span> <span class="o">+</span> <span class="s1">&#39; -a | grep &#39;</span> <span class="o">+</span> <span class="n">args</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">universal_newlines</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">qemu_pids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">local_command_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;pgrep &#39;</span> <span class="o">+</span> <span class="n">grep</span> <span class="o">+</span> <span class="s1">&#39; -a&#39;</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">universal_newlines</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">pids</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">qemu_pids</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">pid</span> <span class="ow">in</span> <span class="n">pids</span><span class="p">:</span>
+                <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">pid</span><span class="o">.</span><span class="n">lstrip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;No processes </span><span class="si">%s</span><span class="s1"> running to retrieve pid&#39;</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
+            <span class="c1">#logger.info(ex)</span>
+            <span class="k">return</span> <span class="o">-</span><span class="mi">1</span></div>
+
+<div class="viewcode-block" id="QEMUNode.setup_remote_address"><a class="viewcode-back" href="../../../../api/marvis.node.qemu/#marvis.node.qemu.QEMUNode.setup_remote_address">[docs]</a>    <span class="k">def</span> <span class="nf">setup_remote_address</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">address</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Add the simulation IP address to the remote device.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        address : str</span>
+<span class="sd">            The address to assign to the external node in simulation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">command_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;sudo ip addr add </span><span class="si">{</span><span class="n">address</span><span class="si">}</span><span class="s1"> dev </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">guest_interface</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="s1">&#39;root&#39;</span><span class="p">)</span>
+        <span class="n">defer</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;remove remote ip </span><span class="si">{</span><span class="n">address</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">remove_remote_address</span><span class="p">,</span> <span class="n">address</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="QEMUNode.remove_remote_address"><a class="viewcode-back" href="../../../../api/marvis.node.qemu/#marvis.node.qemu.QEMUNode.remove_remote_address">[docs]</a>    <span class="k">def</span> <span class="nf">remove_remote_address</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">address</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Remove the simulation IP address from the remote device.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        address : str</span>
+<span class="sd">            The address to remove from the external node.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">command_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;sudo ip addr del </span><span class="si">{</span><span class="n">address</span><span class="si">}</span><span class="s1"> dev </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">guest_interface</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="s1">&#39;root&#39;</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2021, Arne Boockmeyer, Martin Michaelis, Felix Gohla
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
