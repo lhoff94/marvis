@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from cohydra import ArgumentParser, Network, DockerNode, SwitchNode, Scenario
+from marvis import ArgumentParser, Network, DockerNode, SwitchNode, Scenario
 
 class Example(object):
     def __init__(self):
@@ -34,7 +34,7 @@ def main():
     def test2(workflow):
         workflow.sleep(10)
         client1.execute_command('curl server -v')
-        example.some_value = 42
+        example.some_value = 6
 
     scenario.add_network(net)
     with scenario as sim:
