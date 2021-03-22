@@ -13,7 +13,7 @@
 
 ## Installation
 
-### Installation With Docker
+### Installation Using Docker
 
 Marvis can be obtained via docker.
 The easiest solution is using the VSCode *Remote - Containers* extension.
@@ -30,26 +30,91 @@ The main image [`ghcr.io/diselab/marvis`](./docker/Dockerfile) is based on the i
 The [`ghcr.io/diselab/marvis:base`](./docker/marvis-base/Dockerfile) image installs all neccessary dependencies for marvis,
 [`ghcr.io/diselab/marvis:dev`](./docker/marvis-dev/Dockerfile) is for development purposes (docker-cli in the container).
 
-### Installation Without Docker
+### Installation Without Using Docker
 
-Recommended python version: Python 3.7
+In the case you do not want to use the prebuilt Docker, a normal ns-3
+installation with *NetAnim* Python bindings will work, too. Cohydra has
+so far been tested with **Debian 10 Buster** and **Ubuntu 18.04 Bionic
+Beaver**.
 
-In the case you do not want to use the prebuilt docker, a normal ns-3 installation with *NetAnim* Python bindings will work, too.
-To easily install these have a look at our [python wheels repository](https://github.com/osmhpi/python-wheels).
+The following instructions describe how to install Cohydra system-wide.
+If you want to install Cohydra for your user only (`pip3 install --user
+…`), in a virtualenv, or in a pipenv, feel free to do so. However, we
+won't cover instructions in how to get the
+`PYTHONPATH`/virtualenv/pipenv together with privilege escalation (sudo)
+working.
 
-You also need the following packages:
+First, make sure you have the required packages to build dependencies
+installed:
+
 ```shell script
-sudo pip3 install pyroute2 nsenter docker paramiko
-sudo pip3 install git+https://github.com/active-expressions/active-expressions-static-python
+apt install \
+  build-essential \
+  cargo \
+  git \
+  libssl-dev \
+  python3-dev \
+  python3-pip \
+  python3-setuptools \
+  python3-wheel \
+  rustc
 ```
 
-The Python libraries / directory provided by ns-3 and all other packages has to be in your `PYTHONPATH`, though.
+The recommended Python version is Python 3.7 and up.
+Also, make sure you have pip3 version 21 or up
+(if not, try `pip3 install --upgrade pip`).
+
+#### User Installation
+
+If you do not plan to modify the source code of Cohydra yourself,
+Cohydra can be installed with the following command:
+
+```shell script
+# without ns-3
+pip3 install git+https://github.com/diselab/marvis.git
+
+# including ns-3
+pip3 install 'git+https://github.com/diselab/marvis.git#egg=cohydra[ns-3]'
+```
+
+The second of the commands above, will use our
+[Python Wheels repository](https://github.com/osmhpi/python-wheels)
+for easier installation of binary dependencies, such as ns-3.
+
 To run an example testcase, go to the example folder and run:
 ```shell script
 python3 basic_example.py
 ```
 
+#### Developer Installation
+
+If you do plan to modify the source code of Cohydra, clone this
+repository and to install dependencies, run, e.g.:
+
+```shell script
+# without ns-3
+pip3 install -e .
+
+# including ns-3
+pip3 install -e '.[ns-3]'
+
+# including dev tools, if you want to contribute <3
+pip3 install -e '.[dev]'
+
+# including ns-3 and dev tools
+pip3 install -e '.[ns-3,dev]'
+```
+
+In this case, where you do not install Cohydra itself but just its
+dependencies, the code of Cohydra needs to be in your `PYTHONPATH`.
+E.g.:
+
+```shell script
+export PYTHONPATH=$PYTHONPATH:$PWD/path/to/marvis-repo
+```
+
 Marvis so far has only been tested with **Debian 10 Buster** and **Ubuntu 18.04 Bionic Beaver**.
+
 
 ## Contribution
 
