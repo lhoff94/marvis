@@ -172,13 +172,21 @@
 <span class="sd">    ----------</span>
 <span class="sd">    network : :class:`.Network`</span>
 <span class="sd">        The network this channel belongs to.</span>
+<span class="sd">    channel_name : str</span>
+<span class="sd">        The name of the channel</span>
 <span class="sd">    nodes : list of :class:`.Node`</span>
 <span class="sd">        The nodes to connect on a physical channel.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">network</span><span class="p">,</span> <span class="n">nodes</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">network</span><span class="p">,</span> <span class="n">channel_name</span><span class="p">,</span> <span class="n">nodes</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">nodes</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The channel </span><span class="si">{</span><span class="n">channel_name</span><span class="si">}</span><span class="s2"> has less than 2 nodes. Abort.&quot;</span><span class="p">)</span>
+
         <span class="c1">#: The network the channel belongs to.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">network</span> <span class="o">=</span> <span class="n">network</span>
+
+        <span class="c1">#: The name of the channel</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">channel_name</span> <span class="o">=</span> <span class="n">channel_name</span>
 
         <span class="c1">#: All Interfaces (~network cards) on this channel.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">interfaces</span> <span class="o">=</span> <span class="p">[]</span>
@@ -186,8 +194,8 @@
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Creating container with </span><span class="si">%d</span><span class="s1"> nodes&#39;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">nodes</span><span class="p">))</span>
         <span class="c1">#: A container with all ns-3 internal nodes.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ns3_nodes_container</span> <span class="o">=</span> <span class="n">ns_net</span><span class="o">.</span><span class="n">NodeContainer</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">ns3_nodes_container</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">ns3_node</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">connected_node</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ns3_nodes_container</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">connected_node</span><span class="o">.</span><span class="n">node</span><span class="o">.</span><span class="n">ns3_node</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
