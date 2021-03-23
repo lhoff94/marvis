@@ -1,5 +1,6 @@
-var/*
-.idea/*
+var
+.idea
+.vscode
 
 # NS-3 Directory
 /ns3
@@ -8,22 +9,21 @@ var/*
 *.pyc
 
 # Python environment (generated via makefile)
-/.env
+.env
 
 # Python .virtualenv link
-/.virtualenv
+.virtualenv
 
 # Local Makefile
-/Makefile.local
+Makefile.local
 
 # PCAP files from tests
 *.pcap
 
 # Simulation log files
-/simulation-logs
-/examples/simulation-logs
-/docker/sawtooth-pbft/keys
+simulation-logs
+docker/sawtooth-pbft/keys
 
 # Generated documentation
-/docs/build
-/docs/source/api
+docs/build
+docs/source/api
