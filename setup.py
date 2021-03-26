@@ -43,5 +43,10 @@ setup(
         'dev': [
             'pylint',
         ],
+        'docs': [
+            'sphinx~=2.3',
+            'sphinx_rtd_theme~=0.4.3',
+            'sphinx_autopackagesummary~=1.2',
+        ]
     },
 )

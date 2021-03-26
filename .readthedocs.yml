@@ -7,4 +7,6 @@ python:
   version: 3.8  # Important for being able to import importlib.metadata
   install:
     - method: pip
-      path: docs
+      path: .
+      extra_requirements:
+        - docs
