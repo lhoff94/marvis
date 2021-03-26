@@ -28,10 +28,10 @@ copyright = f'{datetime.utcnow().year}, {author}'
 # The full version, including alpha/beta/rc tags
 try:
     import importlib.metadata
-    version = importlib.metadata.version('leafsim')
+    version = importlib.metadata.version('marvis')
 except ModuleNotFoundError:  # Python <3.8
     import pkg_resources
-    version = pkg_resources.get_distribution('leaf').version
+    version = pkg_resources.get_distribution('marvis').version
 # The full version, including alpha/beta/rc tags
 release = version
 
