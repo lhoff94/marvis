@@ -22,17 +22,17 @@ import sphinx_rtd_theme
 # -- Project information -----------------------------------------------------
 
 project = 'marvis'
-author = 'Arne Boockmeyer, Martin Michaelis, Felix Gohla'
+author = 'https://diselab.berlin'
 copyright = f'{datetime.utcnow().year}, {author}'
 
 # The full version, including alpha/beta/rc tags
-version = '0.2.0'
-
-if 'BUILD_TAG' in os.environ:
-    release = os.environ['BUILD_TAG']
-    if release != 'master':
-        version = f'{version} - {release}'
-
+try:
+    import importlib.metadata
+    version = importlib.metadata.version('leafsim')
+except ModuleNotFoundError:  # Python <3.8
+    import pkg_resources
+    version = pkg_resources.get_distribution('leaf').version
+# The full version, including alpha/beta/rc tags
 release = version
 
 # -- General configuration ---------------------------------------------------
@@ -90,11 +90,6 @@ autodoc_default_options = {
 autosummary_generate = True
 
 html_show_sphinx = False
-
-# Link replacement
-extlinks = {
-    'src': ('https://github.com/diselab/marvis/tree/master/%s', 'src ')
-}
 
 # Inheritance diagram design
 inheritance_graph_attrs = dict(rankdir='TB', fontsize=18)
