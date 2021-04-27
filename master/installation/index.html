@@ -5,7 +5,8 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>Installation &mdash; marvis 0.2.0 documentation</title>
@@ -157,10 +158,10 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="installation">
+  <section id="installation">
 <h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
 <p>Running marvis requires some dependencies. We therefore recommend using the Docker images provided below.</p>
-<div class="section" id="installation-with-docker">
+<section id="installation-with-docker">
 <h2>Installation With Docker<a class="headerlink" href="#installation-with-docker" title="Permalink to this headline">¶</a></h2>
 <p>Marvis can be obtained via docker.
 The easiest solution is using the VSCode <em>Remote - Containers</em> extension.
@@ -180,15 +181,15 @@ You of course need to modify the volume mount to allow marvis access to your sce
 <p>The main image is based on the images in the <a class="reference external" href="https://github.com/diselab/marvis/tree/master/docker">docker</a> directory.
 The <a class="reference external" href="https://github.com/diselab/marvis/tree/master/docker/marvis-base/Dockerfile">marvis-base</a> installs all neccessary dependencies for marvis,
 <a class="reference external" href="https://github.com/diselab/marvis/tree/master/docker/marvis-dev/Dockerfile">marvis-dev</a> is for development purposes (docker-cli in the container).</p>
-</div>
-<div class="section" id="local-installation-without-docker">
+</section>
+<section id="local-installation-without-docker">
 <h2>Local Installation Without Docker<a class="headerlink" href="#local-installation-without-docker" title="Permalink to this headline">¶</a></h2>
 <p>In the case you do not want to use the prebuilt docker, a normal ns-3 installation with <em>NetAnim</em> Python bindings will work, too.
 The Python libraries / directory provided by ns-3 has to be in your <code class="code docutils literal notranslate"><span class="pre">PYTHONPATH</span></code>, though.
 Marvis so far has only been tested with <strong>Debian 10 Buster</strong>, <strong>Ubuntu 18.04 Bionic Beaver</strong> and <strong>ns-3.33</strong>.</p>
 <p>There is no installation via <code class="code docutils literal notranslate"><span class="pre">pip</span></code>.</p>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
