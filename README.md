@@ -14,21 +14,21 @@ After setting Marvis up, test your setup with the basic example.
 
 Marvis has so far been tested with **Debian 10 Buster**, **Ubuntu 18.04 Bionic Beaver**, and **Ubuntu 20.04 Focal Fossa**. Others may work.
 
-# Prerequisites
+## Prerequisites
 For nearly all cases you need a working installation of docker. Therefore follow the official [docker installation documentation](https://docs.docker.com/engine/install/ubuntu/).
 Afterward, test your docker installation with:
 ```sh
 sudo docker run hello-world
 ```
 
-# Set-up Tutorial
+## Set-up Tutorial
 
 For your setup you have to decide between:
 Simply use Marvis in a docker container (with docker)
 Develop Marvis and run it in a docker container (with docker)
 Develop Marvis and run it on your local machine (with and without docker) (not recommended)
 
-## Simply use Marvis
+### Simply use Marvis
 To simple use Marvis as a tool, you can use our created docker images by running the following command:
 ```sh
 sudo docker run -it --rm --cap-add=ALL -v /var/run/docker.sock:/var/run/docker.sock -v /absolute/path/to/your/marvis/scenario/folder:/marvisscenarios --net host --pid host --userns host --privileged ghcr.io/diselab/marvis:latest
@@ -45,7 +45,7 @@ python3 your-scenario.py
 
 The [example folder](https://github.com/diselab/marvis/tree/master/examples) contains examples for scenarios.
 
-## Develop Marvis and run it in a docker container
+### Develop Marvis and run it in a docker container
 
 To develop Marvis, you first have to clone the Marvis repository:
 ```sh
@@ -79,7 +79,7 @@ python3 your-scenario.py
 
 If you want to try the examples, map the examples folder to the container and run `python3 basic_example.py` for example.
 
-## Develop Marvis and run it on your local machine or without docker
+### Develop Marvis and run it on your local machine or without docker
 
 In the case, you want to run Marvis on your local machine, a normal [ns-3
 installation](https://www.nsnam.org/wiki/Installation) with *NetAnim* Python bindings is necessary.
