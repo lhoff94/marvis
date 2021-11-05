@@ -6,9 +6,9 @@ Marvis is a hybrid testbed for evaluation IoT and other distributed applications
 For more details about Marvis see the publication "[Towards a Staging Environment for the Internet of Things](https://arxiv.org/pdf/2101.10697.pdf)" by Beilharz et al.
 
 Marvis is mostly docker-based. It's possible to run Marvis without docker at all, but this is not recommended.
-The recommended setup is to run Marvis in a docker container. To simply use Marvis, see the first part of the setup tutorial.
-To develop Marvis and run it in a docker container, see the second part of the setup tutorial.
-Top develop Marvis and run it outside of docker, read the third part of the setup tutorial.
+The recommended setup is to run Marvis in a docker container. To simply use Marvis, see the [first part](https://github.com/diselab/marvis/README.md#simply-use-marvis) of the setup tutorial.
+To develop Marvis and run it in a docker container, see the [second part](https://github.com/diselab/marvis/README.md#develop-marvis-and-run-it-in-a-docker-container) of the setup tutorial.
+Top develop Marvis and run it outside of docker, read the [third part](https://github.com/diselab/marvis/README.md#develop-marvis-and-run-it-on-your-local-machine-or-without-docker) of the setup tutorial.
 
 After setting Marvis up, test your setup with the basic example.
 
@@ -24,9 +24,9 @@ sudo docker run hello-world
 ## Set-up Tutorial
 
 For your setup you have to decide between:
-Simply use Marvis in a docker container (with docker)
-Develop Marvis and run it in a docker container (with docker)
-Develop Marvis and run it on your local machine (with and without docker) (not recommended)
+- [Simply use Marvis in a docker container](https://github.com/diselab/marvis/README.md#simply-use-marvis) (with docker)
+- [Develop Marvis and run it in a docker container](https://github.com/diselab/marvis/README.md#develop-marvis-and-run-it-in-a-docker-container) (with docker)
+- [Develop Marvis and run it on your local machine]](https://github.com/diselab/marvis/README.md#develop-marvis-and-run-it-on-your-local-machine-or-without-docker) (with and without docker) (not recommended)
 
 ### Simply use Marvis
 To simple use Marvis as a tool, you can use our created docker images by running the following command:
