@@ -1,11 +1,11 @@
 # Marvis Contributing Guide
 
-We always welcome contributions to Marvis. When issuing a pull request, pease make sure:
+We always welcome contributions to Marvis. 
+
+When issuing a pull request, pease make sure:
 
 - [`pylint`](https://www.pylint.org/) does not show any additional errors or warnings
 - your code and pull request are well documented (including how to test your feature if it is more complex)
-
-Afterward, we are going to test your new feature and review the code.
 
 
 ## Developig Marvis
