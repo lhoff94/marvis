@@ -18,6 +18,8 @@ RUN pip3 install --no-cache-dir \
 # Copy the sumo python packages (traci, sumolib and libsumo) from the sumo image
 COPY --from=sumo /usr/local/lib/python3.7 /usr/local/lib/python3.7
 
+ENV TRACI_HOME=/usr/local/lib/python3.7/dist-packages
+
 ENV COLOREDLOGS_DATE_FORMAT="%H:%M:%S" \
 	COLOREDLOGS_LOG_FORMAT="%(asctime)s %(name)-32s %(levelname)-8s %(message)s" \
 	COLOREDLOGS_LOG_LEVEL="DEBUG" \
