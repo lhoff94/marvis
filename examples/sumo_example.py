@@ -3,6 +3,7 @@
 from marvis import ArgumentParser, Network, DockerNode, Scenario, WiFiChannel
 from marvis.mobility_input import SUMOMobilityInput
 
+
 def main():
     scenario = Scenario()
 
@@ -25,8 +26,9 @@ def main():
     scenario.add_mobility_input(sumo)
 
     with scenario as sim:
-        # To simulate forever, just do not specifiy the simulation_time parameter.
+        # To simulate forever, do not specify the simulation_time parameter.
         sim.simulate(simulation_time=30)
+
 
 if __name__ == "__main__":
     parser = ArgumentParser()
