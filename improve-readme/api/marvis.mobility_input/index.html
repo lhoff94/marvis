@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>marvis.node &mdash; marvis 0.2.0 - improve-readme documentation</title>
+  <title>marvis.mobility_input &mdash; marvis 0.2.0 - improve-readme documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
@@ -20,8 +20,8 @@
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex/" />
     <link rel="search" title="Search" href="../../search/" />
-    <link rel="next" title="marvis.node.base" href="../marvis.node.base/" />
-    <link rel="prev" title="marvis.network" href="../marvis.network/" /> 
+    <link rel="next" title="marvis.mobility_input.mobility_input" href="../marvis.mobility_input.mobility_input/" />
+    <link rel="prev" title="marvis.interface" href="../marvis.interface/" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -54,18 +54,13 @@
 <li class="toctree-l3"><a class="reference internal" href="../marvis.context/">marvis.context</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../marvis.events/">marvis.events</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../marvis.interface/">marvis.interface</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../marvis.mobility_input/">marvis.mobility_input</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../marvis.network/">marvis.network</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">marvis.node</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../marvis.node.base/">marvis.node.base</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../marvis.node.docker/">marvis.node.docker</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../marvis.node.external/">marvis.node.external</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../marvis.node.interface/">marvis.node.interface</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../marvis.node.lxd/">marvis.node.lxd</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../marvis.node.ssh/">marvis.node.ssh</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../marvis.node.switch/">marvis.node.switch</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">marvis.mobility_input</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../marvis.mobility_input.mobility_input/">marvis.mobility_input.mobility_input</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../marvis.mobility_input.sumo/">marvis.mobility_input.sumo</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../marvis.network/">marvis.network</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../marvis.node/">marvis.node</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../marvis.scenario/">marvis.scenario</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../marvis.simulation/">marvis.simulation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../marvis.util/">marvis.util</a></li>
@@ -92,7 +87,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../" class="icon icon-home"></a> &raquo;</li>
           <li><a href="../">API Reference</a> &raquo;</li>
-      <li>marvis.node</li>
+      <li>marvis.mobility_input</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -101,35 +96,20 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-marvis.node">
-<span id="marvis-node"></span><h1>marvis.node<a class="headerlink" href="#module-marvis.node" title="Permalink to this headline"></a></h1>
-<p>Nodes are the main components of simulating behaviour.</p>
+  <section id="module-marvis.mobility_input">
+<span id="marvis-mobility-input"></span><h1>marvis.mobility_input<a class="headerlink" href="#module-marvis.mobility_input" title="Permalink to this headline"></a></h1>
+<p>MobilityInputs describe how external simulation interfaces move nodes.</p>
 <table class="longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="../marvis.node.base/#module-marvis.node.base" title="marvis.node.base"><code class="xref py py-obj docutils literal notranslate"><span class="pre">marvis.node.base</span></code></a></p></td>
-<td><p>Base abstract class for a node.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="../marvis.mobility_input.mobility_input/#module-marvis.mobility_input.mobility_input" title="marvis.mobility_input.mobility_input"><code class="xref py py-obj docutils literal notranslate"><span class="pre">marvis.mobility_input.mobility_input</span></code></a></p></td>
+<td><p>Base abstract class for co-simulation positional input.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../marvis.node.docker/#module-marvis.node.docker" title="marvis.node.docker"><code class="xref py py-obj docutils literal notranslate"><span class="pre">marvis.node.docker</span></code></a></p></td>
-<td><p>Docker containers in the simulation.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../marvis.node.external/#module-marvis.node.external" title="marvis.node.external"><code class="xref py py-obj docutils literal notranslate"><span class="pre">marvis.node.external</span></code></a></p></td>
-<td><p>Physical Nodes that are connected to the simulation host.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../marvis.node.interface/#module-marvis.node.interface" title="marvis.node.interface"><code class="xref py py-obj docutils literal notranslate"><span class="pre">marvis.node.interface</span></code></a></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../marvis.node.lxd/#module-marvis.node.lxd" title="marvis.node.lxd"><code class="xref py py-obj docutils literal notranslate"><span class="pre">marvis.node.lxd</span></code></a></p></td>
-<td><p>LXD containers in the simulation.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../marvis.node.ssh/#module-marvis.node.ssh" title="marvis.node.ssh"><code class="xref py py-obj docutils literal notranslate"><span class="pre">marvis.node.ssh</span></code></a></p></td>
-<td><p>Physical hosts to connect to via SSH.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../marvis.node.switch/#module-marvis.node.switch" title="marvis.node.switch"><code class="xref py py-obj docutils literal notranslate"><span class="pre">marvis.node.switch</span></code></a></p></td>
-<td><p>Simulated network switch.</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="../marvis.mobility_input.sumo/#module-marvis.mobility_input.sumo" title="marvis.mobility_input.sumo"><code class="xref py py-obj docutils literal notranslate"><span class="pre">marvis.mobility_input.sumo</span></code></a></p></td>
+<td><p>SUMO co-simulation.</p></td>
 </tr>
 </tbody>
 </table>
@@ -142,8 +122,8 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../marvis.network/" class="btn btn-neutral float-left" title="marvis.network" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../marvis.node.base/" class="btn btn-neutral float-right" title="marvis.node.base" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../marvis.interface/" class="btn btn-neutral float-left" title="marvis.interface" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../marvis.mobility_input.mobility_input/" class="btn btn-neutral float-right" title="marvis.mobility_input.mobility_input" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
