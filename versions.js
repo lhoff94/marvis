@@ -51,7 +51,7 @@ window.addEventListener('load', function() {
     var branchesContainer = createElement(otherVersionsContainer, 'dl');
     createElement(branchesContainer, 'dt', {}, 'Branches');
 
-    var branches = ["master", "delete_old_examples", "example/diak", "fix-no-stop-container-if-not-running", "fix-sumo-scenario", "fix-sumo-scenario-docs", "gh-pages", "linting", "new-naming-marvis", "qemu_branch", "readthedocs", "renaming-v2", "scenario-formatting"];
+    var branches = ["master", "delete_old_examples", "example/diak", "fix-no-stop-container-if-not-running", "fix-sumo-scenario", "fix-sumo-scenario-docs", "gh-pages", "linting", "new-naming-marvis", "qemu_branch", "readthedocs", "renaming-v2", "scenario-formatting", "update-contributing"];
     for (var i = 0; i < branches.length; i++) {
         var branch = branches[i];
         var container = branchesContainer;
