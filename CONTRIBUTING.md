@@ -86,7 +86,7 @@ Marvis can be installed with the following command:
 pip3 install git+https://github.com/diselab/marvis.git
 
 # including ns-3
-pip3 install 'git+https://github.com/diselab/marvis.git#egg=cohydra[ns-3]'
+pip3 install 'git+https://github.com/diselab/marvis.git#egg=marvis[ns-3]'
 ```
 
 The second of the commands above will use our
