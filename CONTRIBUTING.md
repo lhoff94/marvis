@@ -1,6 +1,6 @@
 # Marvis Contributing Guide
 
-We always welcome contributions to Marvis. 
+We always welcome contributions to Marvis.
 
 When issuing a pull request, pease make sure:
 
@@ -71,7 +71,7 @@ apt install \
   rustc
 ```
 
-The recommended Python version is Python 3.7. Python 3.8 is right now not supported (if you are running Ubuntu 20.04, make sure to install Python 3.7). 
+The recommended Python version is Python 3.7. Python 3.8 is right now not supported (if you are running Ubuntu 20.04, make sure to install Python 3.7).
 Also, make sure you have pip3 version 21 or up
 (if not, try `pip3 install --upgrade pip`).
 
@@ -86,7 +86,7 @@ Marvis can be installed with the following command:
 pip3 install git+https://github.com/diselab/marvis.git
 
 # including ns-3
-pip3 install 'git+https://github.com/diselab/marvis.git#egg=cohydra[ns-3]'
+pip3 install 'git+https://github.com/diselab/marvis.git#egg=marvis[ns-3]'
 ```
 
 The second of the commands above will use our
