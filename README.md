@@ -46,21 +46,26 @@ Now, have look at our [other examples](https://github.com/diselab/marvis/tree/ma
 To run Marvis with the SUMO traffic simulator, you first have to [install SUMO locally on your machine](https://sumo.dlr.de/docs/Installing/index.html).
 
 If you run Marvis in the recommended docker setup, you have to start SUMO before Marvis via:
-```sh
-sumo-gui --remote-port 8813 -c /path/to/your/sumo/scenario.sumocfg
-```
-(You can also use sumo without the GUI, just use the command `sumo`).
 
+```sh
+sumo-gui --remote-port 8813 -c examples/docker/sumo/sumo-scenario/scenario.sumocfg
+```
+
+(You can also use sumo without the GUI, just use the command `sumo`).
 If you run Marvis locally on your machine, just provide the configuration path to the SUMO setup in your Marvis scenario. Marvis will start SUMO by itself. 
 
-Example SUMO Scenario: [sumo_example.py](https://github.com/diselab/marvis/blob/master/examples/sumo_example.py)
+To execute the example scenario run inside the container:
 
+```sh
+cd marvisscenarios
+python3 sumo_example.py
+```
 
 
 ## Development & Contribution
 
 We always welcome contributions or forks.
-Please refer to our [CONTIBRUTING](https://github.com/diselab/marvis/blob/master/CONTIBRUTING.md) guide on how to develop and extend Marvis.
+Please refer to our [CONTRIBUTING](https://github.com/diselab/marvis/blob/master/CONTIBRUTING.md) guide on how to develop and extend Marvis.
 
 
 ## Contributors
