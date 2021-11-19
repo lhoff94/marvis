@@ -40,9 +40,6 @@ setup(
                 '/latest/download/ns-3.33-py3-none-linux_x86_64.whl',
             ),
         ],
-        'sumo': [
-            'traci'
-        ],
         'dev': [
             'pylint',
         ],
