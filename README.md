@@ -61,6 +61,24 @@ cd marvisscenarios
 python3 sumo_example.py
 ```
 
+## Citing Marvis 📖
+If you use Marvis in your work, please cite our paper
+
+**Towards a Staging Environment for the Internet of Things**. Jossekin Beilharz, Philipp Wiesner, Arne Boockmeyer, Florian Brokhausen, Ilja Behnke, Robert Schmid, Lukas Pirl, and Lauritz Thamsen. In the Proceedings of the *2021 IEEE International Conference on Pervasive Computing and Communications Workshops (PerCom Workshops)*. Presented in the Work in Progress (WiP) session of the conference. IEEE. 2021. [pdf](https://arxiv.org/pdf/2101.10697.pdf)
+
+You can use the bibtex
+
+```
+@inproceedings{Beilharz2021_StagingEnvironmentIoT,
+  author={Beilharz, Jossekin and Wiesner, Philipp and Boockmeyer, Arne and Brokhausen, Florian and Behnke, Ilja and Schmid, Robert and Pirl, Lukas and Thamsen, Lauritz},
+  booktitle={2021 IEEE International Conference on Pervasive Computing and Communications Workshops (PerCom Workshops)}, 
+  title={Towards a Staging Environment for the Internet of Things}, 
+  year={2021},
+  pages={312-315},
+  doi={10.1109/PerComWorkshops51409.2021.9431087}
+}
+```
+
 
 ## Development & Contribution
 
