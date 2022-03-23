@@ -1,7 +1,7 @@
 name: Main Workflow
 'on':
   - push
-  - pull_request
+  - pull_request 
   - workflow_dispatch
 
 jobs:
@@ -75,6 +75,7 @@ jobs:
           else
             git config user.name "GitHub Actions"
             git config user.email "<>"
+            git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
             git add .
             git commit -m "Build docs for ${GITHUB_SHA::7} on branch ${GITHUB_REF#refs/heads/}"
             git push
