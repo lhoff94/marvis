@@ -223,12 +223,17 @@ class DockerNode(Node):
 
     def stop_docker_container(self):
         """Stop the container."""
-        if self.container is not None:
-            logger.info('Stopping docker container: %s', self.container.name)
+        if self.container is None:
+            return
+        logger.info('Stopping docker container: %s', self.container.name)
+        try:
             self.container.stop(timeout=1)
-            self.container = None
-            self.container_pid = None
-            self.command_executor = None
+        except docker.errors.APIError as exception:
+            logger.info('Could not stop docker container "%s": %s',
+                        self.container.name, exception)
+        self.container = None
+        self.container_pid = None
+        self.command_executor = None
 
     def setup_host_interfaces(self):
         """Setup the interfaces (bridge, tap, VETH pair) on the host and connect
