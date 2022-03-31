@@ -63,17 +63,17 @@ class DockerNode(Node):
         It must consist only of *alphanumeric characters* and :code:`-`, :code:`_` and :code:`.`.
     docker_image : str
         The name of the docker image to use. If not specified,
-        `docker_file` and `docker_build_dir` must be set.
+        `docker_build_dir` must be set.
     docker_build_dir : str
-        The context directory (relative path possible) to execute the build in.
-    docker_file : str
+        The context directory (absolute or relative) to execute the build in.
+    dockerfile : str, default: 'Dockerfile'
         The (absolute or relative) path to the Dockerfile.
     pull: bool
         Whether to always pull the image specified in `docker_image`.
     cpus : float
         The number of virtual CPUs to assign (1.0 meaning 1 vCPU).
     memory : str
-        The amount of memmory to allow the container to use. **Example:** `'128m'`.
+        The amount of memory to allow the container to use. Example: `'128m'`. 
     command : str
         An optional command to override the standard command on container
         start specified by the Dockerfile.
