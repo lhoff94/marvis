@@ -1,3 +1,8 @@
+# Fail early
+MAKEFLAGS += --warn-undefined-variables
+SHELL := bash
+.SHELLFLAGS := -eu -o pipefail -c
+
 export NS3_TAG ?= 3.33
 export SUMO_TAG ?= 1.4.0
 PROJECT_TAG ?= $(shell if [ -z "`git status --porcelain`" ]; then git rev-parse --short HEAD; else echo dirty; fi)
@@ -5,12 +10,10 @@ export PROJECT_TAG := ${PROJECT_TAG}
 
 docker_build := docker build --build-arg NS3_TAG --build-arg SUMO_TAG --build-arg PROJECT_TAG
 
-.PHONY: latest marvis-base marvis marvis-dev docs
+# All targets are phony.
+.PHONY: latest marvis-base marvis marvis-dev smoke-test-marvis pull-latest push push-latest docs
 
 all: marvis-base marvis marvis-dev
-	#
-	# build tag ${PROJECT_TAG}
-	#
 
 git-is-clean:
 ifeq '${shell git status --porcelain}' ''
@@ -34,6 +37,15 @@ marvis: marvis-base
 marvis-dev: marvis
 	${docker_build} -t ghcr.io/diselab/marvis:dev-${PROJECT_TAG} docker/marvis-dev
 
+
+smoke-test-marvis:
+	 docker run --rm \
+            --net host --pid host --userns host --privileged \
+            -v /var/run/docker.sock:/var/run/docker.sock:ro \
+            -v `pwd`/examples:/examples -w /examples \
+            ghcr.io/diselab/marvis:${PROJECT_TAG} python3 basic_example.py
+
+
 pull-latest:
 	docker pull ghcr.io/diselab/marvis:base
 	docker pull ghcr.io/diselab/marvis:latest
@@ -48,6 +60,7 @@ push-latest: git-is-clean push
 	docker push ghcr.io/diselab/marvis:base
 	docker push ghcr.io/diselab/marvis:latest
 	docker push ghcr.io/diselab/marvis:dev
+
 
 docs:
 	$(MAKE) -C docs

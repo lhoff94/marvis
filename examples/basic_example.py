@@ -17,7 +17,7 @@ def main():
 
     with scenario as sim:
         # To simulate forever, do not specify the simulation_time parameter.
-        sim.simulate(simulation_time=60)
+        sim.simulate(simulation_time=30)
 
 
 if __name__ == "__main__":
