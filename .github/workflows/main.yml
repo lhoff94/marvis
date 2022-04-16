@@ -1,7 +1,7 @@
-name: Build images and smoke test
+name: Build images, smoke test, and push if on master
 'on':
   - push
-  - pull_request 
+  - pull_request
   - workflow_dispatch
 
 jobs:
@@ -16,14 +16,8 @@ jobs:
       - name: Build all images
         run: make -C repo all latest
 
-      - name: Smoke test basic_example.py
-        run: |
-          cd repo
-          docker run --rm \
-            --net host --pid host --userns host --privileged \
-            -v /var/run/docker.sock:/var/run/docker.sock:ro \
-            -v $PWD/examples:/examples -w /examples \
-            ghcr.io/diselab/marvis python3 ./basic_example.py
+      - name: Smoke test
+        run: make -C repo smoke-test-marvis
 
       - name: Login to GitHub Container Registry
         if: github.ref == 'refs/heads/master'
