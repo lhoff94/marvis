@@ -73,7 +73,7 @@ class DockerNode(Node):
     cpus : float
         The number of virtual CPUs to assign (1.0 meaning 1 vCPU).
     memory : str
-        The amount of memmory to allow the container to use. **Example:** `'128m'`.
+        The amount of memory to allow the container to use. **Example:** `'128m'`.
     devices : list
         Devices that should be attached to the container. **Example:** `/dev/ttyUSB0:/dev/ttyUSB0`.
     command : str
