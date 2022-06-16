@@ -73,7 +73,9 @@ class DockerNode(Node):
     cpus : float
         The number of virtual CPUs to assign (1.0 meaning 1 vCPU).
     memory : str
-        The amount of memory to allow the container to use. Example: `'128m'`. 
+        The amount of memmory to allow the container to use. **Example:** `'128m'`.
+    devices : list
+        Devices that should be attached to the container. **Example:** `/dev/ttyUSB0:/dev/ttyUSB0`.
     command : str
         An optional command to override the standard command on container
         start specified by the Dockerfile.
@@ -89,7 +91,7 @@ class DockerNode(Node):
     """
 
     def __init__(self, name, docker_image=None, docker_build_dir=None, dockerfile='Dockerfile', pull=False,
-                 cpus=0.0, memory=None, command=None, volumes=None, exposed_ports=None, environment_variables=None):
+                 cpus=0.0, memory=None, devices=None, command=None, volumes=None, exposed_ports=None, environment_variables=None):
         super().__init__(name)
         #: The docker image to use.
         self.docker_image = docker_image
@@ -104,6 +106,8 @@ class DockerNode(Node):
         self.cpus = cpus
         #: The amount of memory for the container.
         self.memory = memory
+        #: List of devices to attach to container
+        self.devices = devices
 
         #: The startup command.
         self.command = command
@@ -203,6 +207,7 @@ class DockerNode(Node):
             privileged=True,
             nano_cpus=int(self.cpus * 1e9),
             mem_limit=0 if self.memory is None else self.memory,
+            devices = self.devices,
 
             command=self.command,
             extra_hosts=extra_hosts,
