@@ -44,5 +44,5 @@ class InterfaceNode(Node):
 			try:
 				ipr.link('set', ifname=self.ifname, master=ipr.link_lookup(ifname=interface.bridge_name)[0])
 			except netlink.exceptions.NetlinkError as exception:
-				logger.info('Could not connect interface to InterfaceNode "%s": %s',
+				logger.error('Could not connect interface to InterfaceNode "%s": %s',
                         self.name, exception)

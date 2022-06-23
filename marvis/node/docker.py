@@ -147,9 +147,20 @@ class DockerNode(Node):
     def prepare(self, simulation):
         """This runs a setup on network interfaces and starts the container."""
         logger.info('Preparing node %s', self.name)
-        self.build_docker_image()
-        self.start_docker_container(simulation.log_directory, simulation.hosts)
-        self.setup_host_interfaces()
+        
+        try:
+            self.build_docker_image()
+        except docker.errors.BuildError as exception:
+            logger.error('Could not build docker container "%s": %s',
+                    self.name, exception)
+            return
+        except TypeError:
+            logger.error('docker_build_dir for "%s" is incorrect or not existing ',
+                self.name)
+            return
+        else:
+            self.start_docker_container(simulation.log_directory, simulation.hosts)
+            self.setup_host_interfaces()
 
     def build_docker_image(self):
         """Build the image for the container."""
@@ -161,7 +172,8 @@ class DockerNode(Node):
                 dockerfile=self.dockerfile,
                 rm=True,
                 nocache=False,
-            )[0]
+            )[0]                
+
         elif isinstance(self.docker_image, str):
             if not self.pull:
                 try:
@@ -229,6 +241,7 @@ class DockerNode(Node):
     def stop_docker_container(self):
         """Stop the container."""
         if self.container is None:
+            logger.error('Container stopped already or failed to start %s', self.container.name)
             return
         logger.info('Stopping docker container: %s', self.container.name)
         try:
