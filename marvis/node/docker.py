@@ -51,7 +51,7 @@ def log_to_file(container, log_path, stdout=False, stderr=False):
         for line in container.logs(stdout=stdout, stderr=stderr, follow=True, stream=True):
             log.log(logging.INFO if stdout else logging.ERROR, '%s', line.decode().strip())
             log_file.write(line)
-        log.debug('Done logging')
+    log.debug('Done logging')
 
 class DockerNode(Node):
     """A DockerNode represents a docker container.
@@ -241,14 +241,13 @@ class DockerNode(Node):
     def stop_docker_container(self):
         """Stop the container."""
         if self.container is None:
-            logger.error('Container stopped already or failed to start %s', self.container.name)
+            logger.error('Could not stop docker container "%s". Container stopped already or failed to start', self.container.name)
             return
         logger.info('Stopping docker container: %s', self.container.name)
         try:
             self.container.stop(timeout=1)
         except docker.errors.APIError as exception:
-            logger.info('Could not stop docker container "%s": %s',
-                        self.container.name, exception)
+            logger.error('Could not stop docker container "%s". Container stopped already or failed to start', self.container.name)
         self.container = None
         self.container_pid = None
         self.command_executor = None
