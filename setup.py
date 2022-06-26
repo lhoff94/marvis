@@ -32,6 +32,8 @@ setup(
         # Those should be ``extras_require``, no?
         'pylxd',
         'docker',
+        'fastapi',
+        'uvicorn',
     ],
     extras_require={
         'ns-3': [

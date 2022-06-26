@@ -14,7 +14,9 @@ RUN pip3 install --no-cache-dir \
 	pylxd \
 	pyroute2==0.5.18 \
 	pyyaml \
-	git+https://github.com/active-expressions/active-expressions-static-python
+	git+https://github.com/active-expressions/active-expressions-static-python \
+	fastapi \
+	uvicorn
 
 # Copy the sumo python packages (traci, sumolib and libsumo) from the sumo image
 COPY --from=sumo /usr/local/lib/python3.7 /usr/local/lib/python3.7
