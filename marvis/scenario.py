@@ -2,6 +2,8 @@
 
 import logging
 
+from .simulation_driver import SimulationServer
+
 from .simulation import Simulation
 from .context import Context, SimpleContext
 
@@ -32,6 +34,8 @@ class Scenario:
         #: The visualization object
         self.visualization = None
 
+        self.simulation_driver = []
+
         #: The Context is e.g.\ used for teardowns.
         #:
         #: It is created on simulation start.
@@ -48,6 +52,7 @@ class Scenario:
             It will get prepared on simulation start.
         """
         self.networks.add(network)
+    
 
     def add_mobility_input(self, mobility_input):
         """Add a :class:`.MobilityInput`.
@@ -59,6 +64,9 @@ class Scenario:
             It will get prepared on simulation start.
         """
         self.mobility_inputs.append(mobility_input)
+    
+    def add_simulation_driver(self, driver):
+        self.simulation_driver.append(driver)
 
     def set_visualization(self, visualization):
         """Sets the new :class:`.Visualization`.

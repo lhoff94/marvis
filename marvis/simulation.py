@@ -1,5 +1,6 @@
 """The simulation executable."""
 
+from concurrent.futures import thread
 import logging
 import os
 import threading
@@ -15,6 +16,7 @@ from .util import once
 from .context import defer
 from .workflow import Workflow
 from .visualization import Visualization, NoVisualization
+from .simulation_driver import SimulationServer
 
 logger = logging.getLogger(__name__)
 
@@ -58,7 +60,7 @@ class Simulation:
         os.makedirs(self.log_directory, exist_ok=True)
 
         self.visualization = scenario.visualization or NoVisualization()
-        self.visualization.set_output_directory(self.log_directory)
+        self.visualization.set_output_directory(self.log_directory)      
         # Refresh the position of all nodes for the new object
         for node in scenario.nodes():
             self.visualization.set_node_position(node, *node.position)
@@ -136,6 +138,10 @@ class Simulation:
 
         routing_helper = internet.Ipv4GlobalRoutingHelper
         routing_helper.PopulateRoutingTables()
+
+        for driver in self.scenario.simulation_driver:
+            thread = threading.Thread(target=driver.run())
+            thread.start()
 
     def __stop_workflows(self):
         """Stop all running workflows."""
