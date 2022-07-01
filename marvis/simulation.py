@@ -145,8 +145,9 @@ class Simulation:
         routing_helper.PopulateRoutingTables()
 
         for driver in self.scenario.simulation_driver:
-            thread = threading.Thread(target=driver.run())
+            thread = threading.Thread(target=driver.run, daemon=True)
             thread.start()
+            logger.info('Simulation Driver started')
 
     def __stop_workflows(self):
         """Stop all running workflows."""
