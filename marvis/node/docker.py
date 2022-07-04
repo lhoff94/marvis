@@ -91,7 +91,7 @@ class DockerNode(Node):
     """
 
     def __init__(self, name, docker_image=None, docker_build_dir=None, dockerfile='Dockerfile', pull=False,
-                 cpus=0.0, memory=None, devices=None, command=None, volumes=None, exposed_ports=None, environment_variables=None):
+                 cpus=0.0, memory=None, devices=None, command=None, entrypoint=None, volumes=None, exposed_ports=None, environment_variables=None):
         super().__init__(name)
         #: The docker image to use.
         self.docker_image = docker_image
@@ -111,6 +111,8 @@ class DockerNode(Node):
 
         #: The startup command.
         self.command = command
+        #: The entrypoint for the container
+        self.entrypoint = entrypoint
         #: The volumes for the container.
         self.volumes = dict(map(expand_volume_shorthand, volumes.items())) if volumes else None
         #: Ports to expose on the host.
@@ -222,6 +224,7 @@ class DockerNode(Node):
             devices = self.devices,
 
             command=self.command,
+            entrypoint = self.entrypoint,
             extra_hosts=extra_hosts,
             volumes=self.volumes,
             ports=self.exposed_ports,
