@@ -183,7 +183,7 @@ class DockerNode(Node):
 
             if isinstance(self.docker_image, str):
                 repo, *tag = self.docker_image.split(':')
-                tag = tag[0] if not tag else 'latest'
+                tag = 'latest' if not tag else tag[0]
                 logger.info('Pulling docker image: %s, tag %s', repo, tag)
                 self.docker_image = client.images.pull(repo, tag=tag)
 
