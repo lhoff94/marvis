@@ -1,6 +1,6 @@
 
 import logging
-from pyroute2 import IPRoute
+from pyroute2 import IPRoute, netlink
 
 from ..command_executor import ConsoleCommandExecutor
 from .base import Node
@@ -41,4 +41,8 @@ class InterfaceNode(Node):
 		for interface in self.interfaces.values():
 			interface.setup_bridge()
 			interface.connect_tap_to_bridge(tap_mode="UseLocal")
-			ipr.link('set', ifname=self.ifname, master=ipr.link_lookup(ifname=interface.bridge_name)[0])
+			try:
+				ipr.link('set', ifname=self.ifname, master=ipr.link_lookup(ifname=interface.bridge_name)[0])
+			except netlink.exceptions.NetlinkError as exception:
+				logger.error('Could not connect interface to InterfaceNode "%s": %s',
+                        self.name, exception)

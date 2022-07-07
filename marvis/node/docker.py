@@ -51,7 +51,7 @@ def log_to_file(container, log_path, stdout=False, stderr=False):
         for line in container.logs(stdout=stdout, stderr=stderr, follow=True, stream=True):
             log.log(logging.INFO if stdout else logging.ERROR, '%s', line.decode().strip())
             log_file.write(line)
-        log.debug('Done logging')
+    log.debug('Done logging')
 
 class DockerNode(Node):
     """A DockerNode represents a docker container.
@@ -147,9 +147,20 @@ class DockerNode(Node):
     def prepare(self, simulation):
         """This runs a setup on network interfaces and starts the container."""
         logger.info('Preparing node %s', self.name)
-        self.build_docker_image()
-        self.start_docker_container(simulation.log_directory, simulation.hosts)
-        self.setup_host_interfaces()
+        
+        try:
+            self.build_docker_image()
+        except docker.errors.BuildError as exception:
+            logger.error('Could not build docker container "%s": %s',
+                    self.name, exception)
+            return
+        except TypeError:
+            logger.error('docker_build_dir for "%s" is incorrect or not existing ',
+                self.name)
+            return
+        else:
+            self.start_docker_container(simulation.log_directory, simulation.hosts)
+            self.setup_host_interfaces()
 
     def build_docker_image(self):
         """Build the image for the container."""
@@ -161,7 +172,8 @@ class DockerNode(Node):
                 dockerfile=self.dockerfile,
                 rm=True,
                 nocache=False,
-            )[0]
+            )[0]                
+
         elif isinstance(self.docker_image, str):
             if not self.pull:
                 try:
@@ -171,7 +183,7 @@ class DockerNode(Node):
 
             if isinstance(self.docker_image, str):
                 repo, *tag = self.docker_image.split(':')
-                tag = tag[0] if not tag else 'latest'
+                tag = 'latest' if not tag else tag[0]
                 logger.info('Pulling docker image: %s, tag %s', repo, tag)
                 self.docker_image = client.images.pull(repo, tag=tag)
 
@@ -229,13 +241,13 @@ class DockerNode(Node):
     def stop_docker_container(self):
         """Stop the container."""
         if self.container is None:
+            logger.error('Could not stop docker container "%s". Container stopped already or failed to start', self.container.name)
             return
         logger.info('Stopping docker container: %s', self.container.name)
         try:
             self.container.stop(timeout=1)
         except docker.errors.APIError as exception:
-            logger.info('Could not stop docker container "%s": %s',
-                        self.container.name, exception)
+            logger.error('Could not stop docker container "%s". Container stopped already or failed to start', self.container.name)
         self.container = None
         self.container_pid = None
         self.command_executor = None
