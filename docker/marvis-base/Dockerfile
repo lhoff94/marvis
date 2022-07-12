@@ -10,6 +10,7 @@ RUN pip3 install --no-cache-dir \
 	docker \
 	nsenter \
 	paramiko \
+	fabric \
 	pylxd \
 	pyroute2==0.5.18 \
 	pyyaml \
