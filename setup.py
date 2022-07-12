@@ -22,6 +22,7 @@ setup(
         'pyroute2',
         'nsenter',
         'paramiko',
+        'fabric',
         (
             'activeexpressions @ '
             'git+https://github.com/active-expressions/'

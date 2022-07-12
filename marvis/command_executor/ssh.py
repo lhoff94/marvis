@@ -1,7 +1,8 @@
 """Execute commands over SSH."""
 import logging
 import threading
-from paramiko import SSHClient
+#from paramiko import SSHClient
+import fabric
 
 from . import util
 from .base import CommandExecutor
@@ -24,10 +25,17 @@ class SSHCommandExecutor(CommandExecutor):
         Indicates whether to run commands with :code:`sudo`.
     """
 
-    def __init__(self, name, client: SSHClient, sudo=False):
+    # def __init__(self, name, client: SSHClient, sudo=False):
+    #     super().__init__(name)
+    #     #: The SSH connection.
+    #     self.client = client
+    #     #: Indicates whether to run commands with :code:`sudo`.
+    #     self.sudo = sudo
+    
+    def __init__(self, name, connection: fabric.connection, sudo=False):
         super().__init__(name)
         #: The SSH connection.
-        self.client = client
+        self.connection = connection
         #: Indicates whether to run commands with :code:`sudo`.
         self.sudo = sudo
 
@@ -37,7 +45,11 @@ class SSHCommandExecutor(CommandExecutor):
         
         logger = self.get_logger()
         logger.debug('%s', command)
-        (stdin, stdout, stderr) = self.client.exec_command(command)
+        
+        result = self.connection.run(command, hide='both')
+        stdout = result.stdout
+        stderr = result.stderr
+        #(stdin, stdout, stderr) = self.client.exec_command(command)
 
         stdin.close()
 
