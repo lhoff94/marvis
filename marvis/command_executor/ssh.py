@@ -53,8 +53,12 @@ class SSHCommandExecutor(CommandExecutor):
 
         logger = self.get_logger()
         logger.debug('%s', command)
-        
+
         result = self.connection.run(command, hide='both')
+        # print(r"{}".format(result.stdout))
+        # print(type(result.stdout))
+        # print(r"{}".format(result.stderr))
+        # print(type(result.stderr))
         stdout = result.stdout
         stderr = result.stderr
         #(stdin, stdout, stderr) = self.client.exec_command(command)
