@@ -2,7 +2,7 @@
 
 import logging
 import ipaddress
-import paramiko
+#import paramiko
 import fabric
 
 from pyroute2 import IPRoute
@@ -48,9 +48,17 @@ class SSHNode(ExternalNode):
         if ip is None:
             ip = default_ip(bridge)
 
-        connection = Co
+        connection = fabric.Connection(
+            host=ip,
+            user=username,
+            connect_kwargs={
+                "password": password,
+            }
+        )
+        connection.client.load_system_host_keys()
+        self.command_executor = SSHCommandExecutor(name, connection, sudo=True)
 
-        client = paramiko.SSHClient()
-        client.load_system_host_keys()
-        client.connect(ip, username=username, password=password)
-        self.command_executor = SSHCommandExecutor(name, client, sudo=True)
+        #client = paramiko.SSHClient()
+        #client.load_system_host_keys()
+        #client.connect(ip, username=username, password=password)
+        #self.command_executor = SSHCommandExecutor(name, client, sudo=True)
