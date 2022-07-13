@@ -14,7 +14,7 @@ from .base import CommandExecutor
 
 def log_file(logger, level, file, logfile):
     with util.LogFile(logger, logfile) as log:
-        for line in file.split("/n"):
+        for line in filter(lambda n: n.strip(),file.split("/n")):
             if line.strip():
                 log.log(level, len(line))
 
