@@ -4,7 +4,8 @@ from marvis import ArgumentParser, Scenario, Network, SwitchNode, DockerNode, SS
 def main():
     scenario = Scenario()
 
-    net = Network("10.0.0.0", "255.255.255.0", delay="200ms")
+    net = Network("10.0.0.0", "255.255.255.0")
+    net.set_delay(delay="200ms")
 
     node1 = DockerNode('pong', docker_build_dir='./docker/pong')
     node2 = SwitchNode('bridge-1')
