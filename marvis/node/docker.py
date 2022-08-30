@@ -6,6 +6,7 @@ import threading
 
 from nsenter import Namespace
 import docker
+import pyroute2
 
 from ..context import defer
 from ..command_executor import DockerCommandExecutor
@@ -161,7 +162,7 @@ class DockerNode(Node):
         else:
             self.start_docker_container(simulation.log_directory, simulation.hosts)
             self.setup_host_interfaces()
-
+    
     def build_docker_image(self):
         """Build the image for the container."""
         client = docker.from_env()
@@ -237,6 +238,28 @@ class DockerNode(Node):
         self.container_pid = low_level_client.inspect_container(self.container.id)['State']['Pid']
 
         self.command_executor = DockerCommandExecutor(self.name, self.container)
+
+    def restart_docker_container(self, simulation):
+        """This restarts a container and connects it back to the network. """
+        logger.info('Restarting node %s', self.name)
+        self.stop_docker_container()
+        
+        self.start_docker_container(simulation.log_directory, simulation.hosts)
+        for name, interface in self.interfaces.items():
+            # The veth pair might still exist but is then connected to the namespace of the old container
+            try:
+                interface.remove_veth_pair()
+            except pyroute2.netlink.exceptions.NetlinkError as exception:
+                pass
+
+            interface.setup_veth_pair({
+                'ifname': name,
+                "net_ns_fd": f"/proc/{self.container_pid}/ns/net"
+            })
+
+        # Get container's namespace and setup the interface in the container
+            with Namespace(self.container_pid, 'net'):
+                interface.setup_veth_container_end(name)
 
     def stop_docker_container(self):
         """Stop the container."""
