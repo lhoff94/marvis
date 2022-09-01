@@ -10,7 +10,7 @@ def main(logger, dry_run, images, all_images):
     ipr = IPRoute()
     links = ipr.get_links()
     for link in links:
-        name = link.IFLA_IFNAME.value
+        name = link.get("attrs")[0][1]
         if '-ns3-' in name:
             logger.info('remove interface %s', name)
             if not dry_run:
