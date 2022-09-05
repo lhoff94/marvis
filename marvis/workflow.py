@@ -8,6 +8,10 @@ from aexpr import aexpr
 logger = logging.getLogger(__name__)
 
 
+class SimulationStoppedException(Exception):
+    def __init__(self, message='Simulation Stopped'):
+        super().__init__(message)
+
 class Workflow:
     """A workflow is a contains a list of commands for planned execution during the simulation.
 
@@ -62,7 +66,7 @@ class Workflow:
         thread.start()
 
     def __stopped(self):
-        raise Exception('Simulation stopped')
+        raise SimulationStoppedException()
 
     def __check_stop(self):
         if self.stop_event.is_set():
@@ -80,7 +84,10 @@ class Workflow:
         close = self.stop_event.wait(duration)
         logger.debug('Slept for %ds or stopped.', duration)
         if close is True:
-            self.__stopped()
+            try:
+                self.__stopped()
+            except SimulationStoppedException:
+                logger.error('Simulation stopped before sleep timer has expired, Workflow aborted')
 
     def wait_until(self, expression, expected_result, global_variables, local_variables):
         """Wait until an expression is equal to a specific value.
