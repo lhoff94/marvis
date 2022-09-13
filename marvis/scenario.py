@@ -31,6 +31,8 @@ class Scenario:
         self.simulation = None
         #: The visualization object
         self.visualization = None
+        #: All serivicenodes belonging to the scenario.
+        self.servicenodes = set()
 
         #: The Context is e.g.\ used for teardowns.
         #:
@@ -107,6 +109,17 @@ class Scenario:
             The callable to be executed.
         """
         self.workflows.add(func)
+    
+    def add_servicenode(self, servicenode):
+        """Add a servicenode to the simulation.
+
+        Parameters
+        ----------
+        servicenode : :class:`.ServiceNode`
+            The ServiceNode to add.
+            It will get prepared on simulation start.
+        """
+        self.servicenodes.add(servicenode)
 
     def __enter__(self):
         """Prepare a new simulation and context.
