@@ -115,6 +115,10 @@ class Simulation:
         except docker.errors.NotFound:
             pass
 
+        logger.info('Preparing servicenodes for simulation.')
+        for servicenode in self.scenario.servicenodes:
+            servicenode.prepare()
+
         logger.info('Preparing networks for simulation.')
         for (i, network) in enumerate(self.scenario.networks):
             network.prepare(self, i)
@@ -134,6 +138,7 @@ class Simulation:
         for mobility_input in self.scenario.mobility_inputs:
             mobility_input.prepare(self)
 
+
         routing_helper = internet.Ipv4GlobalRoutingHelper
         routing_helper.PopulateRoutingTables()
 
@@ -142,6 +147,12 @@ class Simulation:
         logger.info('Stopping Workflows.')
         for workflow in self.workflows:
             workflow.stop()
+
+    def __cleanup_servicenodes(self):
+        """Clean up the servicenodes."""
+        logger.info('Cleaning up Servicenodes.')
+        for servicenode in self.scenario.servicenodes:
+            servicenode.cleanup()
 
     def simulate(self, simulation_time=None):
         """Simulate the network.
@@ -212,4 +223,6 @@ class Simulation:
             # Stopping the workflows cannot be deferred, because
             # the deferred items won't be cleaned up, until workflows ended.
             self.__stop_workflows()
+            
             core.Simulator.Stop()
+            self.__cleanup_servicenodes()
